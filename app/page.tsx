@@ -35,7 +35,7 @@ export default function Home() {
             onClick={() => router.push("/merchant")}
           >
             <div className={styles.roleIcon}>🏪</div>
-            <h2>I'm a Merchant</h2>
+            <h2>I&apos;m a Merchant</h2>
             <p>Register your business UEN to start accepting crypto payments</p>
             <span className={styles.roleAction}>Register Now →</span>
           </button>
@@ -45,7 +45,7 @@ export default function Home() {
             onClick={() => router.push("/user")}
           >
             <div className={styles.roleIcon}>💳</div>
-            <h2>I'm a User</h2>
+            <h2>I&apos;m a User</h2>
             <p>Scan PayNow QR codes to pay merchants with USDC</p>
             <span className={styles.roleAction}>Make Payment →</span>
           </button>

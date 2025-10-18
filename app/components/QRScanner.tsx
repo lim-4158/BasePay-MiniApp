@@ -51,7 +51,7 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
             })
             .catch((err) => console.error("Error stopping scanner:", err));
         },
-        (errorMessage) => {
+        () => {
           // Error callback (called continuously while scanning)
           // We don't log these as they're just "no QR code found" messages
         }

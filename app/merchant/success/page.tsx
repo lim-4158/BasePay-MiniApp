@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useComposeCast } from "@coinbase/onchainkit/minikit";
 import styles from "./success.module.css";
@@ -88,7 +88,7 @@ function SuccessContent() {
 
         {/* Benefits */}
         <div className={styles.benefits}>
-          <h2 className={styles.benefitsTitle}>What's Next?</h2>
+          <h2 className={styles.benefitsTitle}>What&apos;s Next?</h2>
           <div className={styles.benefitsList}>
             <div className={styles.benefit}>
               <span className={styles.benefitIcon}>✓</span>
