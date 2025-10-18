@@ -11,8 +11,6 @@ function SuccessContent() {
   const { composeCastAsync } = useComposeCast();
 
   const amount = searchParams.get("amount") || "";
-  const merchantAddress = searchParams.get("merchant") || "";
-  const txHash = searchParams.get("tx") || "";
 
   const [isSharing, setIsSharing] = useState(false);
 
