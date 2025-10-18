@@ -28,13 +28,9 @@ async function main() {
   await new Promise(resolve => setTimeout(resolve, 10000));
 
   // Verify contract details
-  const name = await merchantRegistry.name();
-  const symbol = await merchantRegistry.symbol();
   const totalMerchants = await merchantRegistry.totalMerchants();
 
   console.log("\n📋 Contract Details:");
-  console.log("   Name:", name);
-  console.log("   Symbol:", symbol);
   console.log("   Total Merchants:", totalMerchants.toString());
 
   console.log("\n🎉 Deployment completed successfully!");

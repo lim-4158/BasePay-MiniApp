@@ -19,66 +19,69 @@ async function main() {
   console.log();
 
   // Test 1: Read contract info
-  console.log("=== Test 1: Contract Info ===");
-  const name = await registry.name();
-  const symbol = await registry.symbol();
+  console.log("=== Test 1: Contract Stats ===");
   const totalMerchants = await registry.totalMerchants();
 
-  console.log("✅ Name:", name);
-  console.log("✅ Symbol:", symbol);
   console.log("✅ Total Merchants:", totalMerchants.toString());
   console.log();
 
-  // Test 2: Check if a UEN is claimed
-  const testUEN = "201234567A";
-  console.log("=== Test 2: Check UEN Status ===");
-  const isClaimed = await registry.isUENClaimed(testUEN);
-  console.log(`✅ UEN "${testUEN}" claimed:`, isClaimed);
+  // Test 2: Check if a QR payload is registered
+  const testPayload =
+    "00020101021226390012SG.PAYNOW0101002114123456789015204000053037025406100.005802SG5909COFFEE1236009Singapore62070703ABC6304B60A";
+  console.log("=== Test 2: Check QR Payload ===");
+  const isRegistered = await registry.isQrRegistered(testPayload);
+  console.log(`✅ Payload registered:`, isRegistered);
 
-  if (isClaimed) {
-    const merchantAddress = await registry.getMerchantAddress(testUEN);
+  if (isRegistered) {
+    const merchantAddress = await registry.merchantForQr(testPayload);
     console.log(`✅ Merchant address:`, merchantAddress);
+  } else {
+    console.log("ℹ️  Payload not registered yet.");
   }
   console.log();
 
-  // Test 3: Claim a new UEN (if you want to test claiming)
-  console.log("=== Test 3: Claim Test UEN (Optional) ===");
-  console.log("⚠️  Uncomment the code below to test claiming a UEN");
-  console.log("    This will cost gas and claim the UEN to your account\n");
+  // Test 3: Register a new payload (optional)
+  console.log("=== Test 3: Register Test Payload (Optional) ===");
+  console.log("⚠️  Uncomment the code below to test registering a payload");
+  console.log("    This will cost gas and bind the payload to your account\n");
 
   /*
-  const newTestUEN = "202398765B";
-  const isNewUENClaimed = await registry.isUENClaimed(newTestUEN);
+  const newPayload =
+    "00020101021126380012SG.PAYNOW0101002014123456789025204000053037025406200.005802SG5910FOODTRUCK6304A13B";
+  const alreadyRegistered = await registry.isQrRegistered(newPayload);
 
-  if (!isNewUENClaimed) {
-    console.log(`📝 Claiming UEN: ${newTestUEN}...`);
-    const tx = await registry.claimMerchant(newTestUEN);
+  if (!alreadyRegistered) {
+    console.log(`📝 Registering payload...`);
+    const tx = await registry.registerMerchant(newPayload);
     console.log("⏳ Transaction sent:", tx.hash);
 
     await tx.wait();
-    console.log("✅ UEN claimed successfully!");
+    console.log("✅ QR payload registered successfully!");
 
-    const merchantAddress = await registry.getMerchantAddress(newTestUEN);
+    const merchantAddress = await registry.merchantForQr(newPayload);
     console.log("✅ Merchant address:", merchantAddress);
 
     const newTotal = await registry.totalMerchants();
     console.log("✅ New total merchants:", newTotal.toString());
   } else {
-    console.log(`⚠️  UEN ${newTestUEN} is already claimed`);
+    console.log(`⚠️  Payload already registered`);
   }
   */
 
-  // Test 4: Query multiple UENs
+  // Test 4: Query multiple payloads
   console.log("=== Test 4: Batch Query Test ===");
-  const uensToCheck = ["201234567A", "199812345B", "202198765C"];
+  const payloadsToCheck = [
+    testPayload,
+    "00020101021126390012SG.PAYNOW0101002014123456789035204000053037025406150.005802SG5911BOOKSHOP6304C55D",
+  ];
 
-  for (const uen of uensToCheck) {
-    const claimed = await registry.isUENClaimed(uen);
-    if (claimed) {
-      const address = await registry.getMerchantAddress(uen);
-      console.log(`✅ ${uen}: Claimed by ${address}`);
+  for (const payload of payloadsToCheck) {
+    const registered = await registry.isQrRegistered(payload);
+    if (registered) {
+      const address = await registry.merchantForQr(payload);
+      console.log(`✅ Payload registered by ${address}`);
     } else {
-      console.log(`⭕ ${uen}: Not claimed`);
+      console.log(`⭕ Payload not registered`);
     }
   }
   console.log();
