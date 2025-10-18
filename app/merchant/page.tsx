@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
-import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useReadContract, useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
 import QRScanner from "../components/QRScanner";
 import { parsePayNowQR, type PayNowQRData } from "../lib/paynow";
 import { MERCHANT_REGISTRY_ABI, MERCHANT_REGISTRY_ADDRESS } from "../lib/contracts";
+import { addQRCode } from "../lib/qrStorage";
 import styles from "./merchant.module.css";
 
-type Step = "scan" | "confirm" | "registering";
+type Step = "scan" | "confirm" | "naming" | "registering";
 
 const previewPayload = (payload: string): string => {
   if (payload.length <= 80) {
@@ -22,10 +23,12 @@ const previewPayload = (payload: string): string => {
 export default function MerchantRegistration() {
   const router = useRouter();
   const { isFrameReady, setFrameReady } = useMiniKit();
+  const { address } = useAccount();
 
   const [step, setStep] = useState<Step>("scan");
   const [qrPayload, setQrPayload] = useState("");
   const [qrDetails, setQrDetails] = useState<PayNowQRData | null>(null);
+  const [qrName, setQrName] = useState("");
   const [error, setError] = useState("");
   const [manualEntry, setManualEntry] = useState(false);
   const [manualPayload, setManualPayload] = useState("");
@@ -114,12 +117,18 @@ export default function MerchantRegistration() {
     }
   };
 
-  // Redirect to success page after confirmation
+  // Save to local storage and redirect after confirmation
   useEffect(() => {
-    if (isConfirmed && hash) {
-      router.push(`/merchant/success?qr=${encodeURIComponent(qrPayload)}&tx=${hash}`);
+    if (isConfirmed && hash && address) {
+      try {
+        addQRCode(address, qrPayload, qrName, hash);
+        router.push(`/merchant/success?qr=${encodeURIComponent(qrPayload)}&tx=${hash}&name=${encodeURIComponent(qrName)}`);
+      } catch (error) {
+        console.error("Error saving QR code:", error);
+        router.push(`/merchant/success?qr=${encodeURIComponent(qrPayload)}&tx=${hash}`);
+      }
     }
-  }, [isConfirmed, hash, qrPayload, router]);
+  }, [isConfirmed, hash, qrPayload, qrName, address, router]);
 
   // Handle write errors
   useEffect(() => {
@@ -212,8 +221,8 @@ export default function MerchantRegistration() {
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button className={styles.claimButton} onClick={handleRegister} disabled={Boolean(isRegistered)}>
-                    Register QR Payload
+                  <button className={styles.claimButton} onClick={() => setStep("naming")} disabled={Boolean(isRegistered)}>
+                    Continue
                   </button>
                   <button className={styles.secondaryButton} onClick={resetToScan}>
                     Scan A Different QR
@@ -224,7 +233,44 @@ export default function MerchantRegistration() {
           </div>
         )}
 
-        {/* Step 3: Registration in Progress */}
+        {/* Step 3: Name Your QR Code */}
+        {step === "naming" && (
+          <div className={styles.namingStep}>
+            <h2 className={styles.stepTitle}>Name Your QR Code</h2>
+            <p className={styles.stepSubtitle}>
+              Give this QR code a memorable name to help you identify it later
+            </p>
+
+            <div className={styles.inputGroup}>
+              <label htmlFor="qrName">QR Code Name</label>
+              <input
+                id="qrName"
+                type="text"
+                value={qrName}
+                onChange={(e) => setQrName(e.target.value)}
+                placeholder="e.g., Main Store Counter, Food Stall #1"
+                className={styles.nameInput}
+                maxLength={50}
+              />
+              <p className={styles.hint}>This name will only be visible to you</p>
+            </div>
+
+            <div className={styles.buttonGroup}>
+              <button
+                className={styles.claimButton}
+                onClick={handleRegister}
+                disabled={!qrName.trim()}
+              >
+                Register QR Code
+              </button>
+              <button className={styles.secondaryButton} onClick={() => setStep("confirm")}>
+                Back
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Registration in Progress */}
         {step === "registering" && (
           <div className={styles.claimingStep}>
             <div className={styles.spinner}></div>

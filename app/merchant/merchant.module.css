@@ -139,6 +139,49 @@
 
 .submitButton:disabled,
 .claimButton:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+
+/* Naming Step */
+.namingStep {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.stepTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+  text-align: center;
+}
+
+.stepSubtitle {
+  font-size: 16px;
+  color: #6c757d;
+  margin: 0 0 32px 0;
+  text-align: center;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.nameInput:focus {
+  border-color: #0052FF;
+}
+
+.submitButton:disabled,
+.claimButton:disabled {
   background: #9CA3AF;
   cursor: not-allowed;
 }

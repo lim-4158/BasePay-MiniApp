@@ -1,107 +1,534 @@
+/* New User-First Homepage Styles */
+
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0052FF 0%, #0041CC 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  padding-bottom: 80px;
+}
+
+/* Header */
+.header {
   padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.content {
-  max-width: 800px;
-  width: 100%;
+.headerTop {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.hero {
-  text-align: center;
-  margin-bottom: 48px;
+.appName {
+  font-size: 24px;
+  font-weight: 700;
   color: white;
+  margin: 0 0 4px 0;
 }
 
-.title {
-  font-size: clamp(40px, 8vw, 64px);
-  font-weight: 800;
-  margin: 0 0 16px 0;
-  letter-spacing: -1px;
-}
-
-.tagline {
-  font-size: clamp(18px, 3vw, 24px);
-  margin: 0 0 12px 0;
-  opacity: 0.95;
-}
-
-.subtitle {
-  font-size: 16px;
-  opacity: 0.8;
+.greeting {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
   margin: 0;
 }
 
-.roleSelector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-bottom: 40px;
+.merchantLink {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.roleCard {
-  background: white;
-  border: none;
+.merchantLink:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Content */
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* Balance Card */
+.balanceCard {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   border-radius: 20px;
   padding: 32px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
 }
 
-.roleCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.roleIcon {
-  font-size: 56px;
+.balanceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
 }
 
-.roleCard h2 {
+.balanceLabel {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.usdcBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.balanceAmount {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1;
+}
+
+.balanceSubtext {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 12px 0 0 0;
+}
+
+.balanceLoading {
+  padding: 20px 0;
+}
+
+.smallSpinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+/* Scan Button */
+.scanButton {
+  width: 100%;
+  background: white;
+  border: none;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.scanButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
+.scanButton:active {
+  transform: translateY(0);
+}
+
+.scanIcon {
+  font-size: 40px;
+  flex-shrink: 0;
+}
+
+.scanText {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.scanTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scanSubtitle {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.scanArrow {
+  font-size: 24px;
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+/* Transactions Section */
+.transactionsSection {
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+}
+
+.viewAllButton {
+  background: transparent;
+  color: #3b82f6;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.viewAllButton:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Transaction Loading */
+.txLoading {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.emptyTransactions {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 8px 0;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+}
+
+/* Transactions List */
+.transactionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.transactionItem {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.transactionItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.txLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.txIcon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.txInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.txMerchant {
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  font-family: monospace;
+}
+
+.txDate {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.txAmount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ef4444;
+  white-space: nowrap;
+  font-family: monospace;
+}
+
+/* Quick Links */
+.quickLinks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.quickLink {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.quickLink:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.quickLink span:first-child {
+  font-size: 32px;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContent {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalIcon {
+  font-size: 56px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.modalTitle {
   font-size: 24px;
   font-weight: 700;
-  color: #1F2937;
+  color: #0f172a;
+  text-align: center;
   margin: 0 0 12px 0;
 }
 
-.roleCard p {
-  font-size: 15px;
-  color: #6B7280;
-  line-height: 1.6;
-  margin: 0 0 20px 0;
-}
-
-.roleAction {
-  display: inline-block;
-  color: #0052FF;
-  font-weight: 700;
+.modalText {
   font-size: 16px;
+  color: #64748b;
+  text-align: center;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
 }
 
-.features {
+.modalActions {
   display: flex;
-  justify-content: center;
-  gap: 32px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modalConfirm {
+  background: #3b82f6;
   color: white;
-  opacity: 0.9;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.feature {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
+.modalConfirm:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
 }
 
-.feature span {
-  font-size: 20px;
+.modalCancel {
+  background: transparent;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modalCancel:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding-bottom: 60px;
+  }
+
+  .header {
+    padding: 16px;
+  }
+
+  .appName {
+    font-size: 20px;
+  }
+
+  .content {
+    padding: 20px 16px;
+  }
+
+  .balanceCard {
+    padding: 28px 20px;
+  }
+
+  .balanceAmount {
+    font-size: 40px;
+  }
+
+  .scanButton {
+    padding: 16px;
+  }
+
+  .scanIcon {
+    font-size: 36px;
+  }
+
+  .scanTitle {
+    font-size: 16px;
+  }
+
+  .transactionItem {
+    padding: 14px;
+  }
+
+  .txIcon {
+    font-size: 28px;
+  }
+
+  .modalContent {
+    padding: 28px 24px;
+  }
+
+  .modalIcon {
+    font-size: 48px;
+  }
+
+  .modalTitle {
+    font-size: 20px;
+  }
+
+  .modalText {
+    font-size: 15px;
+  }
 }
