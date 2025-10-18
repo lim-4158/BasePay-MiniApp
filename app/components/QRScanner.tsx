@@ -8,6 +8,22 @@ interface QRScannerProps {
   onError?: (error: string) => void;
 }
 
+const isIgnorableDomError = (error: unknown): boolean => {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+
+  const message = error.message ?? "";
+
+  return (
+    error.name === "NotFoundError" ||
+    error.name === "AbortError" ||
+    message.includes("removeChild") ||
+    message.includes("The node to be removed is not a child of this node") ||
+    message.includes("The play() request was interrupted")
+  );
+};
+
 export default function QRScanner({ onScan, onError }: QRScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -42,22 +58,25 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
         }
 
         if (state === 2 || state === 3 || state === null) {
-          await activeScanner.stop();
+          try {
+            await activeScanner.stop();
+          } catch (stopErr) {
+            if (!isIgnorableDomError(stopErr)) {
+              throw stopErr;
+            }
+          }
         }
 
         try {
           await activeScanner.clear();
         } catch (clearErr) {
-          if (
-            !(clearErr instanceof TypeError) ||
-            !clearErr.message.includes("removeChild")
-          ) {
+          if (!isIgnorableDomError(clearErr)) {
             throw clearErr;
           }
           // Ignore DOM removal errors when element already unmounted
         }
       } catch (err) {
-        if (isMountedRef.current) {
+        if (!isIgnorableDomError(err) && isMountedRef.current) {
           console.error("Error stopping scanner:", err);
         }
       } finally {
@@ -95,6 +114,9 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
       // Initialize new scanner
       const scanner = new Html5Qrcode(elementId.current);
       scannerRef.current = scanner;
+      if (isMountedRef.current) {
+        setIsScanning(true);
+      }
 
       // Get available cameras first
       const cameras = await Html5Qrcode.getCameras();
@@ -115,10 +137,12 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
           if (!isMountedRef.current) return;
 
           console.log("QR Code detected:", decodedText);
-          onScan(decodedText);
 
-          // Stop scanning after successful scan
-          void stopActiveScanner();
+          void (async () => {
+            await stopActiveScanner();
+            if (!isMountedRef.current) return;
+            onScan(decodedText);
+          })();
         },
         () => {
           // Error callback (called continuously while scanning)
@@ -127,7 +151,6 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
       );
 
       if (isMountedRef.current) {
-        setIsScanning(true);
         setHasPermission(true);
       }
     } catch (err) {
@@ -161,6 +184,9 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
 
       // Ensure we clear any partially initialized scanner
       await stopActiveScanner();
+      if (isMountedRef.current) {
+        setIsScanning(false);
+      }
     }
   };
 
@@ -172,8 +198,8 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
   return (
     <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
       <div
-        id={elementId.current}
         style={{
+          position: "relative",
           width: "100%",
           border: isScanning ? "2px solid #0052FF" : "2px dashed #ccc",
           borderRadius: "12px",
@@ -185,12 +211,27 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
           background: "#f5f5f5",
         }}
       >
+        <div
+          id={elementId.current}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+        />
+
         {!isScanning && (
           <div
             style={{
+              position: "absolute",
+              inset: 0,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
               textAlign: "center",
               padding: "40px 20px",
               color: "#666",
+              background: "#f5f5f5",
             }}
           >
             <svg
