@@ -34,5 +34,8 @@ export const minikitConfig = {
     noindex: true
 
   },
+  baseBuilder : {
+    ownerAddress: "0x117379afFF198d6F7d4A9Ea3438ED9DD94418dAA"
+  }
 } as const;
 
