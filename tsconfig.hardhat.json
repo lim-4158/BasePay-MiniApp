@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2019",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "noEmit": false,
+    "outDir": "dist"
+  },
+  "include": [
+    "hardhat.config.ts",
+    "contracts",
+    "contracts/scripts",
+    "contracts/test",
+    "typechain-types"
+  ]
+}
