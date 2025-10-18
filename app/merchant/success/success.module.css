@@ -1,0 +1,203 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  padding: 20px;
+}
+
+.content {
+  background: white;
+  border-radius: 24px;
+  padding: 48px 32px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.successIcon {
+  margin: 0 auto 24px;
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0 0 12px 0;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #6B7280;
+  margin: 0 0 32px 0;
+}
+
+.uenCard {
+  background: linear-gradient(135deg, #0052FF 0%, #0041CC 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.uenValue {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: white;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.txCard {
+  background: #F3F4F6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 32px;
+}
+
+.txLabel {
+  font-size: 12px;
+  color: #6B7280;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.txValue {
+  font-size: 14px;
+  font-family: 'Courier New', monospace;
+  color: #1F2937;
+  margin: 0 0 12px 0;
+  word-break: break-all;
+}
+
+.viewLink {
+  display: inline-block;
+  color: #0052FF;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.viewLink:hover {
+  text-decoration: underline;
+}
+
+.benefits {
+  text-align: left;
+  margin-bottom: 32px;
+}
+
+.benefitsTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.benefitsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.benefit {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.benefitIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  background: #10B981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.benefit strong {
+  display: block;
+  color: #1F2937;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.benefit p {
+  margin: 0;
+  color: #6B7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shareButton {
+  background: #0052FF;
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.shareButton:hover {
+  background: #0041CC;
+}
+
+.shareButton:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.homeButton {
+  background: transparent;
+  color: #6B7280;
+  border: 2px solid #E5E7EB;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+
+.homeButton:hover {
+  border-color: #9CA3AF;
+  color: #374151;
+}

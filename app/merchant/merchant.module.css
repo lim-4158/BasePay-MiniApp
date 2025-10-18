@@ -1,0 +1,252 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #0052FF 0%, #0041CC 100%);
+  color: white;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.content {
+  flex: 1;
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  color: #1a1a1a;
+}
+
+.scanStep,
+.confirmStep,
+.claimingStep,
+.manualEntry {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.manualButton,
+.secondaryButton {
+  background: transparent;
+  border: 2px solid #0052FF;
+  color: #0052FF;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.manualButton:hover,
+.secondaryButton:hover {
+  background: rgba(0, 82, 255, 0.05);
+}
+
+.manualEntry {
+  padding: 20px 0;
+}
+
+.inputGroup {
+  margin-bottom: 24px;
+}
+
+.inputGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  font-size: 18px;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #0052FF;
+}
+
+.hint {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.submitButton,
+.claimButton {
+  background: #0052FF;
+  border: none;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+}
+
+.submitButton:hover,
+.claimButton:hover {
+  background: #0041CC;
+}
+
+.submitButton:disabled,
+.claimButton:disabled {
+  background: #9CA3AF;
+  cursor: not-allowed;
+}
+
+.confirmStep {
+  padding: 20px 0;
+}
+
+.uenDisplay {
+  background: #F3F4F6;
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.label {
+  font-size: 14px;
+  color: #6B7280;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.uenValue {
+  font-size: 32px;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: #0052FF;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.infoBox {
+  background: #ECFDF5;
+  border: 2px solid #10B981;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.infoBox p {
+  margin: 0;
+  color: #065F46;
+  line-height: 1.8;
+}
+
+.errorBox {
+  background: #FEE2E2;
+  border: 2px solid #EF4444;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.errorBox strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #991B1B;
+}
+
+.errorBox p {
+  margin: 0;
+  color: #991B1B;
+}
+
+.claimingStep {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid #E5E7EB;
+  border-top-color: #0052FF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 24px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.claimingStep h2 {
+  font-size: 24px;
+  margin: 0 0 12px 0;
+  color: #1F2937;
+}
+
+.loadingText {
+  font-size: 16px;
+  color: #6B7280;
+  line-height: 1.6;
+}
+
+.txHash {
+  margin-top: 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #9CA3AF;
+  word-break: break-all;
+}
+
+.loading {
+  text-align: center;
+  padding: 24px;
+  color: #6B7280;
+  font-style: italic;
+}
