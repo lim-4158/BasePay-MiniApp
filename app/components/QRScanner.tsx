@@ -12,24 +12,63 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
   const [isScanning, setIsScanning] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const elementId = "qr-reader";
+  const isMountedRef = useRef(true);
+  const elementId = useRef(`qr-reader-${Math.random().toString(36).substr(2, 9)}`);
 
   useEffect(() => {
+    isMountedRef.current = true;
+
     // Cleanup on unmount
     return () => {
-      if (scannerRef.current && isScanning) {
-        scannerRef.current
-          .stop()
-          .catch((err) => console.error("Error stopping scanner:", err));
-      }
+      isMountedRef.current = false;
+
+      const cleanup = async () => {
+        if (scannerRef.current) {
+          try {
+            const state = await scannerRef.current.getState();
+            if (state === 2) { // SCANNING
+              await scannerRef.current.stop();
+            }
+            await scannerRef.current.clear();
+          } catch (err) {
+            // Ignore cleanup errors
+            console.log("Scanner cleanup completed");
+          }
+          scannerRef.current = null;
+        }
+      };
+
+      cleanup();
     };
-  }, [isScanning]);
+  }, []);
 
   const startScanning = async () => {
+    if (!isMountedRef.current) return;
+
     try {
-      // Initialize scanner
-      const scanner = new Html5Qrcode(elementId);
+      // Clean up any existing scanner first
+      if (scannerRef.current) {
+        try {
+          const state = await scannerRef.current.getState();
+          if (state === 2) { // SCANNING
+            await scannerRef.current.stop();
+          }
+          await scannerRef.current.clear();
+        } catch (e) {
+          console.log("No active scanner to stop");
+        }
+        scannerRef.current = null;
+      }
+
+      // Initialize new scanner
+      const scanner = new Html5Qrcode(elementId.current);
       scannerRef.current = scanner;
+
+      // Get available cameras first
+      const cameras = await Html5Qrcode.getCameras();
+      if (!cameras || cameras.length === 0) {
+        throw new Error("No cameras found on this device");
+      }
 
       // Request camera permission and start scanning
       await scanner.start(
@@ -37,9 +76,12 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
         {
           fps: 10, // Scans per second
           qrbox: { width: 250, height: 250 }, // Scanning box size
+          aspectRatio: 1.0,
         },
         (decodedText) => {
           // Success callback
+          if (!isMountedRef.current) return;
+
           console.log("QR Code detected:", decodedText);
           onScan(decodedText);
 
@@ -47,9 +89,15 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
           scanner
             .stop()
             .then(() => {
-              setIsScanning(false);
+              if (isMountedRef.current) {
+                setIsScanning(false);
+              }
             })
-            .catch((err) => console.error("Error stopping scanner:", err));
+            .catch((err) => {
+              if (isMountedRef.current) {
+                console.error("Error stopping scanner:", err);
+              }
+            });
         },
         () => {
           // Error callback (called continuously while scanning)
@@ -57,14 +105,35 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
         }
       );
 
-      setIsScanning(true);
-      setHasPermission(true);
+      if (isMountedRef.current) {
+        setIsScanning(true);
+        setHasPermission(true);
+      }
     } catch (err) {
+      if (!isMountedRef.current) return;
+
       console.error("Error starting scanner:", err);
       setHasPermission(false);
 
-      const errorMsg =
-        err instanceof Error ? err.message : "Failed to access camera";
+      let errorMsg = "Failed to access camera";
+
+      if (err instanceof Error) {
+        // Provide more helpful error messages
+        if (err.message.includes("Permission")) {
+          errorMsg = "Camera permission denied. Please allow camera access in your browser settings.";
+        } else if (err.message.includes("NotFoundError")) {
+          errorMsg = "No camera found on this device.";
+        } else if (err.message.includes("NotAllowedError")) {
+          errorMsg = "Camera access blocked. Please enable camera permissions.";
+        } else if (err.message.includes("NotReadableError")) {
+          errorMsg = "Camera is already in use by another application.";
+        } else if (err.message.includes("OverconstrainedError")) {
+          errorMsg = "Camera constraints not supported. Try a different device.";
+        } else {
+          errorMsg = err.message;
+        }
+      }
+
       if (onError) {
         onError(errorMsg);
       }
@@ -72,12 +141,21 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
   };
 
   const stopScanning = async () => {
+    if (!isMountedRef.current) return;
+
     if (scannerRef.current && isScanning) {
       try {
-        await scannerRef.current.stop();
-        setIsScanning(false);
+        const state = await scannerRef.current.getState();
+        if (state === 2) { // SCANNING
+          await scannerRef.current.stop();
+        }
+        if (isMountedRef.current) {
+          setIsScanning(false);
+        }
       } catch (err) {
-        console.error("Error stopping scanner:", err);
+        if (isMountedRef.current) {
+          console.error("Error stopping scanner:", err);
+        }
       }
     }
   };
@@ -85,7 +163,7 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
   return (
     <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
       <div
-        id={elementId}
+        id={elementId.current}
         style={{
           width: "100%",
           border: isScanning ? "2px solid #0052FF" : "2px dashed #ccc",
