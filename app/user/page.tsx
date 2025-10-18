@@ -165,7 +165,6 @@ export default function UserPayment() {
           ← Back
         </button>
         <h1 className={styles.title}>Pay with USDC</h1>
-        <p className={styles.subtitle}>Scan a merchant&apos;s PayNow QR to pay with crypto</p>
       </div>
 
       <div className={styles.content}>

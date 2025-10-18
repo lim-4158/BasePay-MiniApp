@@ -8,9 +8,10 @@ import { base } from 'viem/chains';
 import { USDC_ADDRESS } from './contracts';
 
 // Create public client for reading blockchain data
+// Using Base's public RPC - for production, use a dedicated RPC endpoint
 const publicClient = createPublicClient({
   chain: base,
-  transport: http(),
+  transport: http('https://mainnet.base.org'),
 });
 
 export interface Transaction {
@@ -26,21 +27,30 @@ export interface Transaction {
 /**
  * Get all USDC transfers received by a merchant wallet
  * @param merchantAddress The merchant's wallet address
- * @param fromBlock Optional starting block number
+ * @param fromBlock Optional starting block number (defaults to ~30 days ago)
  * @returns Array of received transactions
  */
 export async function getMerchantPayments(
   merchantAddress: string,
-  fromBlock: bigint = BigInt(0)
+  fromBlock?: bigint
 ): Promise<Transaction[]> {
   try {
+    // If no fromBlock specified, query from approximately 30 days ago
+    // Base has ~2 second block time, so 30 days ≈ 1,296,000 blocks
+    let startBlock = fromBlock;
+    if (!startBlock) {
+      const currentBlock = await publicClient.getBlockNumber();
+      // Query last 1.3M blocks (roughly 30 days on Base)
+      startBlock = currentBlock > BigInt(1300000) ? currentBlock - BigInt(1300000) : BigInt(0);
+    }
+
     const logs = await publicClient.getLogs({
       address: USDC_ADDRESS,
       event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'),
       args: {
         to: merchantAddress as `0x${string}`,
       },
-      fromBlock,
+      fromBlock: startBlock,
     });
 
     // Convert logs to transaction objects
@@ -79,21 +89,29 @@ export async function getMerchantPayments(
 /**
  * Get all USDC transfers sent by a customer wallet
  * @param customerAddress The customer's wallet address
- * @param fromBlock Optional starting block number
+ * @param fromBlock Optional starting block number (defaults to ~30 days ago)
  * @returns Array of sent transactions
  */
 export async function getCustomerPayments(
   customerAddress: string,
-  fromBlock: bigint = BigInt(0)
+  fromBlock?: bigint
 ): Promise<Transaction[]> {
   try {
+    // If no fromBlock specified, query from approximately 30 days ago
+    let startBlock = fromBlock;
+    if (!startBlock) {
+      const currentBlock = await publicClient.getBlockNumber();
+      // Query last 1.3M blocks (roughly 30 days on Base)
+      startBlock = currentBlock > BigInt(1300000) ? currentBlock - BigInt(1300000) : BigInt(0);
+    }
+
     const logs = await publicClient.getLogs({
       address: USDC_ADDRESS,
       event: parseAbiItem('event Transfer(address indexed from, address indexed to, uint256 value)'),
       args: {
         from: customerAddress as `0x${string}`,
       },
-      fromBlock,
+      fromBlock: startBlock,
     });
 
     // Convert logs to transaction objects

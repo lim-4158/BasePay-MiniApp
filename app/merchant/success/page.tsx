@@ -49,7 +49,7 @@ function SuccessContent() {
         {/* Success Icon */}
         <div className={styles.successIcon}>
           <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="40" r="40" fill="#10B981" />
+            <circle cx="40" cy="40" r="40" fill="#0052ff" />
             <path
               d="M25 40L35 50L55 30"
               stroke="white"
@@ -64,19 +64,13 @@ function SuccessContent() {
 
         <p className={styles.subtitle}>Your QR payload now resolves to your BasedPay merchant wallet</p>
 
-        {/* QR Display */}
-        <div className={styles.qrCard}>
-          <p className={styles.label}>Registered QR Payload</p>
-          <p className={styles.qrValue}>{previewPayload(qrPayload)}</p>
-        </div>
-
         {/* Transaction Details */}
         {txHash && (
           <div className={styles.txCard}>
             <p className={styles.txLabel}>Transaction Hash</p>
             <p className={styles.txValue}>{txHash}</p>
             <a
-              href={`https://sepolia.basescan.org/tx/${txHash}`}
+              href={`https://basescan.org/tx/${txHash}`}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.viewLink}
@@ -86,45 +80,10 @@ function SuccessContent() {
           </div>
         )}
 
-        {/* Benefits */}
-        <div className={styles.benefits}>
-          <h2 className={styles.benefitsTitle}>What&apos;s Next?</h2>
-          <div className={styles.benefitsList}>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>Accept Crypto Payments</strong>
-                <p>Customers can now pay with USDC by scanning your PayNow QR</p>
-              </div>
-            </div>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>Direct Settlement</strong>
-                <p>Funds land straight in your wallet the moment the transaction confirms</p>
-              </div>
-            </div>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>Share Widely</strong>
-                <p>Distribute the same QR everywhere—BasedPay will always resolve it to you</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Action Buttons */}
         <div className={styles.actions}>
           <button className={styles.shareButton} onClick={handleShare} disabled={isSharing}>
             {isSharing ? "Sharing..." : "Share on Farcaster"}
-          </button>
-
-          <button
-            className={styles.dashboardButton}
-            onClick={() => router.push("/merchant/dashboard")}
-          >
-            View Dashboard
           </button>
 
           <button className={styles.homeButton} onClick={() => router.push("/")}>

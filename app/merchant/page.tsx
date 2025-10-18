@@ -40,7 +40,7 @@ export default function MerchantRegistration() {
     }
   }, [setFrameReady, isFrameReady]);
 
-  const shouldCheckRegistration = qrPayload.length > 0 && step === "confirm";
+  const shouldCheckRegistration = qrPayload.length > 0 && step === "naming";
 
   // Check if QR payload is registered
   const { data: isRegistered, isLoading: isCheckingRegistration } = useReadContract({
@@ -75,7 +75,7 @@ export default function MerchantRegistration() {
 
     setQrPayload(parsed.raw);
     setQrDetails(parsed);
-    setStep("confirm");
+    setStep("naming");
     setError("");
     setManualEntry(false);
   };
@@ -91,7 +91,7 @@ export default function MerchantRegistration() {
 
     setQrPayload(parsed.raw);
     setQrDetails(parsed);
-    setStep("confirm");
+    setStep("naming");
     setError("");
     setManualEntry(false);
   };
@@ -241,32 +241,48 @@ export default function MerchantRegistration() {
               Give this QR code a memorable name to help you identify it later
             </p>
 
-            <div className={styles.inputGroup}>
-              <label htmlFor="qrName">QR Code Name</label>
-              <input
-                id="qrName"
-                type="text"
-                value={qrName}
-                onChange={(e) => setQrName(e.target.value)}
-                placeholder="e.g., Main Store Counter, Food Stall #1"
-                className={styles.nameInput}
-                maxLength={50}
-              />
-              <p className={styles.hint}>This name will only be visible to you</p>
-            </div>
+            {isCheckingRegistration ? (
+              <div className={styles.loading}>Checking QR registration status...</div>
+            ) : isRegistered ? (
+              <>
+                <div className={styles.errorBox}>
+                  <strong>QR Payload Already Registered</strong>
+                  <p>This PayNow QR payload has already been claimed by another wallet.</p>
+                </div>
+                <button className={styles.secondaryButton} onClick={resetToScan}>
+                  Scan A Different QR
+                </button>
+              </>
+            ) : (
+              <>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="qrName">QR Code Name</label>
+                  <input
+                    id="qrName"
+                    type="text"
+                    value={qrName}
+                    onChange={(e) => setQrName(e.target.value)}
+                    placeholder="e.g., Main Store Counter, Food Stall #1"
+                    className={styles.nameInput}
+                    maxLength={50}
+                  />
+                  <p className={styles.hint}>This name will only be visible to you</p>
+                </div>
 
-            <div className={styles.buttonGroup}>
-              <button
-                className={styles.claimButton}
-                onClick={handleRegister}
-                disabled={!qrName.trim()}
-              >
-                Register QR Code
-              </button>
-              <button className={styles.secondaryButton} onClick={() => setStep("confirm")}>
-                Back
-              </button>
-            </div>
+                <div className={styles.buttonGroup}>
+                  <button
+                    className={styles.claimButton}
+                    onClick={handleRegister}
+                    disabled={!qrName.trim()}
+                  >
+                    Register QR Code
+                  </button>
+                  <button className={styles.secondaryButton} onClick={resetToScan}>
+                    Back
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
