@@ -120,6 +120,13 @@ function SuccessContent() {
             {isSharing ? "Sharing..." : "Share on Farcaster"}
           </button>
 
+          <button
+            className={styles.dashboardButton}
+            onClick={() => router.push("/merchant/dashboard")}
+          >
+            View Dashboard
+          </button>
+
           <button className={styles.homeButton} onClick={() => router.push("/")}>
             Back to Home
           </button>

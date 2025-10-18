@@ -144,6 +144,13 @@ function SuccessContent() {
           </button>
 
           <button
+            className={styles.historyButton}
+            onClick={() => router.push("/user/history")}
+          >
+            View Payment History
+          </button>
+
+          <button
             className={styles.payAgainButton}
             onClick={() => router.push("/user")}
           >

@@ -50,21 +50,6 @@ export default function Home() {
             <span className={styles.roleAction}>Make Payment →</span>
           </button>
         </div>
-
-        <div className={styles.features}>
-          <div className={styles.feature}>
-            <span>⚡</span>
-            <p>Instant settlement</p>
-          </div>
-          <div className={styles.feature}>
-            <span>🔒</span>
-            <p>Secure on Base</p>
-          </div>
-          <div className={styles.feature}>
-            <span>🌏</span>
-            <p>Singapore PayNow</p>
-          </div>
-        </div>
       </div>
     </div>
   );

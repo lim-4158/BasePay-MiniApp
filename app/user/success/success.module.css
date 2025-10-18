@@ -213,6 +213,7 @@
   cursor: not-allowed;
 }
 
+.historyButton,
 .payAgainButton {
   background: #10b981;
   color: white;
