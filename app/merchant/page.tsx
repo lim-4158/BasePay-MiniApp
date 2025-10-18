@@ -70,11 +70,6 @@ export default function MerchantRegistration() {
   const handleQRScan = (data: string) => {
     const parsed = parsePayNowQR(data);
 
-    if (!parsed.isPayNow) {
-      setError("This QR code does not look like a PayNow QR payload. Please scan the PayNow QR from your POS or banking app.");
-      return;
-    }
-
     setQrPayload(parsed.raw);
     setQrDetails(parsed);
     setStep("confirm");
@@ -88,11 +83,6 @@ export default function MerchantRegistration() {
 
     if (!parsed.raw) {
       setError("Please paste the full QR payload.");
-      return;
-    }
-
-    if (!parsed.isPayNow) {
-      setError("The payload provided is not recognised as a PayNow QR. Double check that you copied the full string.");
       return;
     }
 
@@ -199,12 +189,8 @@ export default function MerchantRegistration() {
                   Proxy type {qrDetails.proxyType} · {qrDetails.proxyValue}
                 </p>
               )}
-              {(qrDetails?.amount || qrDetails?.reference) && (
-                <p className={styles.meta}>
-                  {qrDetails.amount ? `Amount preset: ${qrDetails.amount}` : ""}
-                  {qrDetails.amount && qrDetails.reference ? " · " : ""}
-                  {qrDetails.reference ? `Reference: ${qrDetails.reference}` : ""}
-                </p>
+              {qrDetails?.reference && (
+                <p className={styles.meta}>Reference: {qrDetails.reference}</p>
               )}
             </div>
 
