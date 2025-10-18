@@ -33,7 +33,7 @@ export default function UserPayment() {
   const shouldLookupMerchant = qrPayload.length > 0 && step === "verify";
 
   // Lookup merchant wallet from QR payload
-  const { data: merchantData, isLoading: isLookingUpMerchant } = useReadContract({
+  const { data: merchantData } = useReadContract({
     address: MERCHANT_REGISTRY_ADDRESS,
     abi: MERCHANT_REGISTRY_ABI,
     functionName: "merchantForQr",
@@ -165,7 +165,7 @@ export default function UserPayment() {
           ← Back
         </button>
         <h1 className={styles.title}>Pay with USDC</h1>
-        <p className={styles.subtitle}>Scan a merchant's PayNow QR to pay with crypto</p>
+        <p className={styles.subtitle}>Scan a merchant&apos;s PayNow QR to pay with crypto</p>
       </div>
 
       <div className={styles.content}>
