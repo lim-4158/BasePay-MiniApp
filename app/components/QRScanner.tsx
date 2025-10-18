@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 
 interface QRScannerProps {
@@ -14,6 +14,66 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const isMountedRef = useRef(true);
   const elementId = useRef(`qr-reader-${Math.random().toString(36).substr(2, 9)}`);
+  const stopPromiseRef = useRef<Promise<void> | null>(null);
+
+  const stopActiveScanner = useCallback(async () => {
+    if (stopPromiseRef.current) {
+      await stopPromiseRef.current;
+      return;
+    }
+
+    const activeScanner = scannerRef.current;
+
+    if (!activeScanner) {
+      if (isMountedRef.current) {
+        setIsScanning(false);
+      }
+      return;
+    }
+
+    const stopPromise = (async () => {
+      try {
+        let state: number | null = null;
+
+        try {
+          state = await activeScanner.getState();
+        } catch {
+          state = null;
+        }
+
+        if (state === 2 || state === 3 || state === null) {
+          await activeScanner.stop();
+        }
+
+        try {
+          await activeScanner.clear();
+        } catch (clearErr) {
+          if (
+            !(clearErr instanceof TypeError) ||
+            !clearErr.message.includes("removeChild")
+          ) {
+            throw clearErr;
+          }
+          // Ignore DOM removal errors when element already unmounted
+        }
+      } catch (err) {
+        if (isMountedRef.current) {
+          console.error("Error stopping scanner:", err);
+        }
+      } finally {
+        if (scannerRef.current === activeScanner) {
+          scannerRef.current = null;
+        }
+        if (isMountedRef.current) {
+          setIsScanning(false);
+        }
+        stopPromiseRef.current = null;
+      }
+    })();
+
+    stopPromiseRef.current = stopPromise;
+    await stopPromise;
+  }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -21,44 +81,16 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
     // Cleanup on unmount
     return () => {
       isMountedRef.current = false;
-
-      const cleanup = async () => {
-        if (scannerRef.current) {
-          try {
-            const state = await scannerRef.current.getState();
-            if (state === 2) { // SCANNING
-              await scannerRef.current.stop();
-            }
-            await scannerRef.current.clear();
-          } catch (err) {
-            // Ignore cleanup errors
-            console.log("Scanner cleanup completed");
-          }
-          scannerRef.current = null;
-        }
-      };
-
-      cleanup();
+      void stopActiveScanner();
     };
-  }, []);
+  }, [stopActiveScanner]);
 
   const startScanning = async () => {
     if (!isMountedRef.current) return;
 
     try {
       // Clean up any existing scanner first
-      if (scannerRef.current) {
-        try {
-          const state = await scannerRef.current.getState();
-          if (state === 2) { // SCANNING
-            await scannerRef.current.stop();
-          }
-          await scannerRef.current.clear();
-        } catch (e) {
-          console.log("No active scanner to stop");
-        }
-        scannerRef.current = null;
-      }
+      await stopActiveScanner();
 
       // Initialize new scanner
       const scanner = new Html5Qrcode(elementId.current);
@@ -86,18 +118,7 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
           onScan(decodedText);
 
           // Stop scanning after successful scan
-          scanner
-            .stop()
-            .then(() => {
-              if (isMountedRef.current) {
-                setIsScanning(false);
-              }
-            })
-            .catch((err) => {
-              if (isMountedRef.current) {
-                console.error("Error stopping scanner:", err);
-              }
-            });
+          void stopActiveScanner();
         },
         () => {
           // Error callback (called continuously while scanning)
@@ -137,27 +158,15 @@ export default function QRScanner({ onScan, onError }: QRScannerProps) {
       if (onError) {
         onError(errorMsg);
       }
+
+      // Ensure we clear any partially initialized scanner
+      await stopActiveScanner();
     }
   };
 
   const stopScanning = async () => {
     if (!isMountedRef.current) return;
-
-    if (scannerRef.current && isScanning) {
-      try {
-        const state = await scannerRef.current.getState();
-        if (state === 2) { // SCANNING
-          await scannerRef.current.stop();
-        }
-        if (isMountedRef.current) {
-          setIsScanning(false);
-        }
-      } catch (err) {
-        if (isMountedRef.current) {
-          console.error("Error stopping scanner:", err);
-        }
-      }
-    }
+    await stopActiveScanner();
   };
 
   return (
