@@ -36,7 +36,7 @@ export default function Home() {
           >
             <div className={styles.roleIcon}>🏪</div>
             <h2>I&apos;m a Merchant</h2>
-            <p>Register your business UEN to start accepting crypto payments</p>
+            <p>Register your PayNow QR payload to start accepting crypto payments</p>
             <span className={styles.roleAction}>Register Now →</span>
           </button>
 

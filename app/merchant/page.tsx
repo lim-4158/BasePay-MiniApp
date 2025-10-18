@@ -1,23 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import QRScanner from "../components/QRScanner";
-import { parsePayNowQR, formatUEN, isValidUEN } from "../lib/paynow";
+import { parsePayNowQR, type PayNowQRData } from "../lib/paynow";
 import { MERCHANT_REGISTRY_ABI, MERCHANT_REGISTRY_ADDRESS } from "../lib/contracts";
 import styles from "./merchant.module.css";
 
-export default function MerchantClaim() {
+type Step = "scan" | "confirm" | "registering";
+
+const previewPayload = (payload: string): string => {
+  if (payload.length <= 80) {
+    return payload;
+  }
+
+  return `${payload.slice(0, 40)}...${payload.slice(-20)}`;
+};
+
+export default function MerchantRegistration() {
   const router = useRouter();
   const { isFrameReady, setFrameReady } = useMiniKit();
 
-  const [step, setStep] = useState<"scan" | "confirm" | "claiming">("scan");
-  const [uen, setUen] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [step, setStep] = useState<Step>("scan");
+  const [qrPayload, setQrPayload] = useState("");
+  const [qrDetails, setQrDetails] = useState<PayNowQRData | null>(null);
+  const [error, setError] = useState("");
   const [manualEntry, setManualEntry] = useState(false);
-  const [manualUEN, setManualUEN] = useState("");
+  const [manualPayload, setManualPayload] = useState("");
 
   // Initialize minikit
   useEffect(() => {
@@ -26,70 +37,89 @@ export default function MerchantClaim() {
     }
   }, [setFrameReady, isFrameReady]);
 
-  // Check if UEN is claimed
-  const { data: isClaimed, isLoading: isCheckingClaim } = useReadContract({
+  const shouldCheckRegistration = qrPayload.length > 0 && step === "confirm";
+
+  // Check if QR payload is registered
+  const { data: isRegistered, isLoading: isCheckingRegistration } = useReadContract({
     address: MERCHANT_REGISTRY_ADDRESS,
     abi: MERCHANT_REGISTRY_ABI,
-    functionName: "isUENClaimed",
-    args: uen ? [uen] : undefined,
+    functionName: "isQrRegistered",
+    args: shouldCheckRegistration ? [qrPayload] : undefined,
     query: {
-      enabled: !!uen && step === "confirm",
+      enabled: shouldCheckRegistration,
     },
   });
 
-  // Claim merchant contract call
+  // Register merchant contract call
   const { writeContract, data: hash, error: writeError } = useWriteContract();
 
   // Wait for transaction
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  const resetToScan = () => {
+    setStep("scan");
+    setQrPayload("");
+    setQrDetails(null);
+    setManualPayload("");
+    setError("");
+  };
 
   // Handle QR scan
   const handleQRScan = (data: string) => {
     const parsed = parsePayNowQR(data);
 
-    if (parsed.uen) {
-      setUen(formatUEN(parsed.uen));
-      setStep("confirm");
-      setError("");
-    } else {
-      setError("No UEN found in QR code. Please try again or enter manually.");
-    }
-  };
-
-  // Handle manual UEN entry
-  const handleManualSubmit = () => {
-    const formatted = formatUEN(manualUEN);
-
-    if (!isValidUEN(formatted)) {
-      setError("Invalid UEN format. Please check and try again.");
+    if (!parsed.isPayNow) {
+      setError("This QR code does not look like a PayNow QR payload. Please scan the PayNow QR from your POS or banking app.");
       return;
     }
 
-    setUen(formatted);
+    setQrPayload(parsed.raw);
+    setQrDetails(parsed);
     setStep("confirm");
     setError("");
+    setManualEntry(false);
   };
 
-  // Handle claim submission
-  const handleClaim = () => {
-    if (!uen) return;
+  // Handle manual payload entry
+  const handleManualSubmit = () => {
+    const parsed = parsePayNowQR(manualPayload);
 
-    setStep("claiming");
+    if (!parsed.raw) {
+      setError("Please paste the full QR payload.");
+      return;
+    }
+
+    if (!parsed.isPayNow) {
+      setError("The payload provided is not recognised as a PayNow QR. Double check that you copied the full string.");
+      return;
+    }
+
+    setQrPayload(parsed.raw);
+    setQrDetails(parsed);
+    setStep("confirm");
+    setError("");
+    setManualEntry(false);
+  };
+
+  // Handle registration submission
+  const handleRegister = () => {
+    if (!qrPayload) return;
+
+    setStep("registering");
     setError("");
 
     try {
       writeContract({
         address: MERCHANT_REGISTRY_ADDRESS,
         abi: MERCHANT_REGISTRY_ABI,
-        functionName: "claimMerchant",
-        args: [uen],
+        functionName: "registerMerchant",
+        args: [qrPayload],
       });
     } catch (err) {
-      console.error("Error claiming merchant:", err);
-      setError(err instanceof Error ? err.message : "Failed to claim UEN");
+      console.error("Error registering merchant:", err);
+      setError(err instanceof Error ? err.message : "Failed to register QR payload");
       setStep("confirm");
     }
   };
@@ -97,9 +127,9 @@ export default function MerchantClaim() {
   // Redirect to success page after confirmation
   useEffect(() => {
     if (isConfirmed && hash) {
-      router.push(`/merchant/success?uen=${encodeURIComponent(uen)}&tx=${hash}`);
+      router.push(`/merchant/success?qr=${encodeURIComponent(qrPayload)}&tx=${hash}`);
     }
-  }, [isConfirmed, hash, uen, router]);
+  }, [isConfirmed, hash, qrPayload, router]);
 
   // Handle write errors
   useEffect(() => {
@@ -112,17 +142,11 @@ export default function MerchantClaim() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <button
-          className={styles.backButton}
-          onClick={() => router.push("/")}
-          type="button"
-        >
+        <button className={styles.backButton} onClick={() => router.push("/")} type="button">
           ← Back
         </button>
-        <h1 className={styles.title}>Claim Your UEN</h1>
-        <p className={styles.subtitle}>
-          Scan your PayNow QR code to register as a merchant
-        </p>
+        <h1 className={styles.title}>Register Your PayNow QR</h1>
+        <p className={styles.subtitle}>Scan the exact PayNow QR payload you want customers to pay</p>
       </div>
 
       <div className={styles.content}>
@@ -131,11 +155,8 @@ export default function MerchantClaim() {
           <div className={styles.scanStep}>
             <QRScanner onScan={handleQRScan} onError={setError} />
 
-            <button
-              className={styles.manualButton}
-              onClick={() => setManualEntry(true)}
-            >
-              Enter UEN Manually
+            <button className={styles.manualButton} onClick={() => setManualEntry(true)}>
+              Enter QR Payload Manually
             </button>
           </div>
         )}
@@ -144,82 +165,72 @@ export default function MerchantClaim() {
         {step === "scan" && manualEntry && (
           <div className={styles.manualEntry}>
             <div className={styles.inputGroup}>
-              <label htmlFor="uen">UEN Number</label>
-              <input
-                id="uen"
-                type="text"
-                value={manualUEN}
-                onChange={(e) => setManualUEN(e.target.value.toUpperCase())}
-                placeholder="e.g., 201234567A"
-                className={styles.input}
+              <label htmlFor="qrPayload">PayNow QR Payload</label>
+              <textarea
+                id="qrPayload"
+                value={manualPayload}
+                onChange={(e) => setManualPayload(e.target.value)}
+                placeholder="Paste the full string encoded in your PayNow QR"
+                className={styles.textArea}
+                rows={6}
               />
-              <p className={styles.hint}>
-                Enter your Singapore business registration number
-              </p>
+              <p className={styles.hint}>You can find this by exporting the QR from your banking portal.</p>
             </div>
 
             <div className={styles.buttonGroup}>
-              <button
-                className={styles.submitButton}
-                onClick={handleManualSubmit}
-                disabled={!manualUEN}
-              >
+              <button className={styles.submitButton} onClick={handleManualSubmit} disabled={!manualPayload.trim()}>
                 Continue
               </button>
-              <button
-                className={styles.secondaryButton}
-                onClick={() => setManualEntry(false)}
-              >
+              <button className={styles.secondaryButton} onClick={() => setManualEntry(false)}>
                 Scan QR Instead
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 2: Confirm UEN */}
+        {/* Step 2: Confirm QR Payload */}
         {step === "confirm" && (
           <div className={styles.confirmStep}>
-            <div className={styles.uenDisplay}>
-              <p className={styles.label}>UEN Number</p>
-              <p className={styles.uenValue}>{uen}</p>
+            <div className={styles.qrDisplay}>
+              <p className={styles.label}>QR Payload</p>
+              <p className={styles.qrValue}>{previewPayload(qrPayload)}</p>
+              {qrDetails?.proxyType && qrDetails?.proxyValue && (
+                <p className={styles.meta}>
+                  Proxy type {qrDetails.proxyType} · {qrDetails.proxyValue}
+                </p>
+              )}
+              {(qrDetails?.amount || qrDetails?.reference) && (
+                <p className={styles.meta}>
+                  {qrDetails.amount ? `Amount preset: ${qrDetails.amount}` : ""}
+                  {qrDetails.amount && qrDetails.reference ? " · " : ""}
+                  {qrDetails.reference ? `Reference: ${qrDetails.reference}` : ""}
+                </p>
+              )}
             </div>
 
-            {isCheckingClaim ? (
-              <div className={styles.loading}>Checking UEN status...</div>
-            ) : isClaimed ? (
+            {isCheckingRegistration ? (
+              <div className={styles.loading}>Checking QR registration status...</div>
+            ) : isRegistered ? (
               <div className={styles.errorBox}>
-                <strong>UEN Already Claimed</strong>
-                <p>
-                  This UEN has already been registered by another merchant.
-                </p>
+                <strong>QR Payload Already Registered</strong>
+                <p>This PayNow QR payload has already been claimed by another wallet.</p>
               </div>
             ) : (
               <>
                 <div className={styles.infoBox}>
                   <p>
-                    ✓ This UEN is available to claim
-                    <br />✓ You will receive a non-transferable NFT
-                    <br />✓ Customers can pay you using this UEN
+                    ✓ This QR payload can be registered
+                    <br />✓ You will be the default merchant wallet customers pay when they scan this QR
+                    <br />✓ You can register additional QR payloads at any time
                   </p>
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button
-                    className={styles.claimButton}
-                    onClick={handleClaim}
-                    disabled={isClaimed}
-                  >
-                    Claim UEN
+                  <button className={styles.claimButton} onClick={handleRegister} disabled={Boolean(isRegistered)}>
+                    Register QR Payload
                   </button>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={() => {
-                      setStep("scan");
-                      setUen("");
-                      setManualEntry(false);
-                    }}
-                  >
-                    Scan Different UEN
+                  <button className={styles.secondaryButton} onClick={resetToScan}>
+                    Scan A Different QR
                   </button>
                 </div>
               </>
@@ -227,15 +238,13 @@ export default function MerchantClaim() {
           </div>
         )}
 
-        {/* Step 3: Claiming in Progress */}
-        {step === "claiming" && (
+        {/* Step 3: Registration in Progress */}
+        {step === "registering" && (
           <div className={styles.claimingStep}>
             <div className={styles.spinner}></div>
-            <h2>
-              {isConfirming ? "Confirming Transaction..." : "Processing Claim..."}
-            </h2>
+            <h2>{isConfirming ? "Confirming Transaction..." : "Finalising Registration..."}</h2>
             <p className={styles.loadingText}>
-              Please wait while we register your UEN on the blockchain.
+              Please wait while we register your PayNow QR payload on-chain.
               <br />
               This may take a few moments.
             </p>
