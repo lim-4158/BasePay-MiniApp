@@ -1,0 +1,345 @@
+/* User Payment Page Styles */
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0052ff 0%, #0041cc 100%);
+  padding: 20px;
+  padding-bottom: 60px;
+}
+
+.header {
+  max-width: 600px;
+  margin: 0 auto 32px;
+  color: white;
+}
+
+.backButton {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background 0.2s;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Scan Step */
+.scanStep {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Verify Step */
+.verifyStep {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.verifyStep h2 {
+  font-size: 24px;
+  margin: 24px 0 12px;
+  color: #1a1a1a;
+}
+
+/* Amount Step */
+.amountStep {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.merchantCard {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.merchantAddress {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  font-family: monospace;
+}
+
+.meta {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 8px 0 0 0;
+}
+
+.balanceCard {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  color: white;
+  text-align: center;
+}
+
+.balanceLabel {
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0 0 8px 0;
+}
+
+.balanceAmount {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.inputGroup {
+  margin-bottom: 24px;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.amountInput {
+  width: 100%;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 600;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: monospace;
+}
+
+.amountInput:focus {
+  border-color: #0052ff;
+}
+
+/* Review Step */
+.reviewStep {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.reviewTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.reviewCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.reviewRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.reviewLabel {
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.reviewValue {
+  font-size: 16px;
+  color: #1a1a1a;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.reviewDivider {
+  height: 1px;
+  background: #dee2e6;
+  margin: 8px 0;
+}
+
+/* Paying Step */
+.payingStep {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.payingStep h2 {
+  font-size: 24px;
+  margin: 24px 0 12px;
+  color: #1a1a1a;
+}
+
+/* Buttons */
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.continueButton,
+.payButton {
+  background: #0052ff;
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+}
+
+.continueButton:hover:not(:disabled),
+.payButton:hover:not(:disabled) {
+  background: #0041cc;
+}
+
+.continueButton:disabled,
+.payButton:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+}
+
+.secondaryButton {
+  background: transparent;
+  color: #0052ff;
+  border: 2px solid #0052ff;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.secondaryButton:hover {
+  background: rgba(0, 82, 255, 0.1);
+}
+
+/* Loading States */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e9ecef;
+  border-top-color: #0052ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.txHash {
+  font-size: 12px;
+  color: #6c757d;
+  margin: 16px 0 0 0;
+  font-family: monospace;
+  word-break: break-all;
+}
+
+/* Error Display */
+.errorBox {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+  color: #991b1b;
+  font-size: 14px;
+}
+
+.errorBox strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.errorBox p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .amountInput {
+    font-size: 20px;
+  }
+
+  .balanceAmount {
+    font-size: 28px;
+  }
+}
