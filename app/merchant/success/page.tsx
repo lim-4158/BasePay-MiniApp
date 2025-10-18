@@ -5,20 +5,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useComposeCast } from "@coinbase/onchainkit/minikit";
 import styles from "./success.module.css";
 
-const previewPayload = (payload: string): string => {
-  if (payload.length <= 80) {
-    return payload;
-  }
-
-  return `${payload.slice(0, 40)}...${payload.slice(-20)}`;
-};
-
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { composeCastAsync } = useComposeCast();
 
-  const qrPayload = searchParams.get("qr") || "";
   const txHash = searchParams.get("tx") || "";
 
   const [isSharing, setIsSharing] = useState(false);
