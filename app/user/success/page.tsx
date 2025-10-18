@@ -48,7 +48,7 @@ function SuccessContent() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="40" cy="40" r="40" fill="#10B981" />
+            <circle cx="40" cy="40" r="40" fill="#3b82f6" />
             <path
               d="M25 40L35 50L55 30"
               stroke="white"
@@ -62,76 +62,8 @@ function SuccessContent() {
         <h1 className={styles.title}>Payment Successful!</h1>
 
         <p className={styles.subtitle}>
-          Your payment has been sent to the merchant
+          Your payment of {amount} USDC has been sent
         </p>
-
-        {/* Payment Summary */}
-        <div className={styles.summaryCard}>
-          <div className={styles.amountSection}>
-            <p className={styles.label}>Amount Paid</p>
-            <p className={styles.amountValue}>{amount} USDC</p>
-          </div>
-
-          <div className={styles.divider}></div>
-
-          <div className={styles.detailRow}>
-            <span className={styles.detailLabel}>To Merchant</span>
-            <span className={styles.detailValue}>
-              {merchantAddress.slice(0, 8)}...{merchantAddress.slice(-6)}
-            </span>
-          </div>
-
-          {txHash && (
-            <div className={styles.detailRow}>
-              <span className={styles.detailLabel}>Transaction</span>
-              <span className={styles.detailValue}>
-                {txHash.slice(0, 8)}...{txHash.slice(-6)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Transaction Link */}
-        {txHash && (
-          <div className={styles.txCard}>
-            <a
-              href={`https://basescan.org/tx/${txHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.viewLink}
-            >
-              View on BaseScan →
-            </a>
-          </div>
-        )}
-
-        {/* Benefits */}
-        <div className={styles.benefits}>
-          <h2 className={styles.benefitsTitle}>What Happened?</h2>
-          <div className={styles.benefitsList}>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>Instant Settlement</strong>
-                <p>Merchant received USDC directly to their wallet</p>
-              </div>
-            </div>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>On-Chain Payment</strong>
-                <p>Transaction permanently recorded on Base blockchain</p>
-              </div>
-            </div>
-            <div className={styles.benefit}>
-              <span className={styles.benefitIcon}>✓</span>
-              <div>
-                <strong>Low Fees</strong>
-                <p>Minimal gas fees compared to traditional payment processors</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Action Buttons */}
         <div className={styles.actions}>
@@ -141,20 +73,6 @@ function SuccessContent() {
             disabled={isSharing}
           >
             {isSharing ? "Sharing..." : "Share on Farcaster"}
-          </button>
-
-          <button
-            className={styles.historyButton}
-            onClick={() => router.push("/user/history")}
-          >
-            View Payment History
-          </button>
-
-          <button
-            className={styles.payAgainButton}
-            onClick={() => router.push("/user")}
-          >
-            Make Another Payment
           </button>
 
           <button

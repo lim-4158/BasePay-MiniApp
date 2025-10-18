@@ -101,7 +101,14 @@ export default function Home() {
           className={styles.scanButton}
           onClick={() => router.push("/user")}
         >
-          <div className={styles.scanIcon}>📱</div>
+          <div className={styles.scanIcon}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+              <rect x="14" y="3" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+              <rect x="3" y="14" width="7" height="7" rx="1" stroke="currentColor" strokeWidth="2"/>
+              <path d="M14 14h2m0 0h2m-2 0v2m0-2v-2m4 4h1v1m-1 2v1m-4-4h-2v2m6 2h1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
+          </div>
           <div className={styles.scanText}>
             <span className={styles.scanTitle}>Scan to Pay</span>
             <span className={styles.scanSubtitle}>
@@ -177,23 +184,6 @@ export default function Home() {
           )}
         </div>
 
-        {/* Quick Links */}
-        <div className={styles.quickLinks}>
-          <button
-            className={styles.quickLink}
-            onClick={() => router.push("/user/history")}
-          >
-            <span>📊</span>
-            <span>History</span>
-          </button>
-          <button
-            className={styles.quickLink}
-            onClick={() => router.push("/merchant/dashboard")}
-          >
-            <span>🏪</span>
-            <span>Dashboard</span>
-          </button>
-        </div>
       </div>
 
       {/* Merchant Confirmation Modal */}

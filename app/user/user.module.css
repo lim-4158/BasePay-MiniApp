@@ -2,7 +2,7 @@
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0052ff 0%, #0041cc 100%);
+  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
   padding: 20px;
   padding-bottom: 60px;
 }
@@ -73,61 +73,56 @@
 /* Amount Step */
 .amountStep {
   background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
-.merchantCard {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+.backButton {
+  background: transparent;
+  color: #3b82f6;
+  border: none;
+  padding: 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: color 0.2s;
+}
+
+.backButton:hover {
+  color: #1e40af;
+}
+
+.compactInfo {
+  background: #eff6ff;
   border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 16px;
+  margin-bottom: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
-.label {
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
   font-size: 12px;
-  color: #6c757d;
+  color: #3b82f6;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0 0 8px 0;
-  font-weight: 600;
 }
 
-.merchantAddress {
-  font-size: 20px;
+.infoValue {
+  font-size: 14px;
+  color: #1e293b;
   font-weight: 700;
-  color: #1a1a1a;
-  margin: 0;
   font-family: monospace;
-}
-
-.meta {
-  font-size: 14px;
-  color: #6c757d;
-  margin: 8px 0 0 0;
-}
-
-.balanceCard {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 24px;
-  color: white;
-  text-align: center;
-}
-
-.balanceLabel {
-  font-size: 14px;
-  opacity: 0.9;
-  margin: 0 0 8px 0;
-}
-
-.balanceAmount {
-  font-size: 32px;
-  font-weight: 700;
-  margin: 0;
 }
 
 .inputGroup {
@@ -136,26 +131,56 @@
 
 .inputGroup label {
   display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amountInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.currency {
+  position: absolute;
+  left: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  pointer-events: none;
 }
 
 .amountInput {
   width: 100%;
-  padding: 16px;
-  font-size: 24px;
-  font-weight: 600;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
+  padding: 24px 24px 24px 48px;
+  font-size: 48px;
+  font-weight: 700;
+  color: #000000;
+  border: 3px solid #3b82f6;
+  border-radius: 16px;
   outline: none;
   transition: border-color 0.2s;
   font-family: monospace;
 }
 
 .amountInput:focus {
-  border-color: #0052ff;
+  border-color: #1e40af;
+}
+
+.currencyLabel {
+  position: absolute;
+  right: 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 8px;
+  pointer-events: none;
 }
 
 /* Review Step */

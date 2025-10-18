@@ -188,51 +188,50 @@ export default function UserPayment() {
         {/* Step 3: Enter Amount */}
         {step === "amount" && (
           <div className={styles.amountStep}>
-            <div className={styles.merchantCard}>
-              <p className={styles.label}>Paying to Merchant</p>
-              <p className={styles.merchantAddress}>
-                {merchantAddress.slice(0, 6)}...{merchantAddress.slice(-4)}
-              </p>
-              {qrDetails?.proxyType && qrDetails?.proxyValue && (
-                <p className={styles.meta}>
-                  {qrDetails.proxyType} · {qrDetails.proxyValue}
-                </p>
-              )}
-            </div>
+            <button className={styles.backButton} onClick={resetToScan}>
+              ← Back
+            </button>
 
-            <div className={styles.balanceCard}>
-              <p className={styles.balanceLabel}>Your USDC Balance</p>
-              <p className={styles.balanceAmount}>
-                {isLoadingBalance ? "Loading..." : `${formatBalance()} USDC`}
-              </p>
+            <div className={styles.compactInfo}>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Paying to</span>
+                <span className={styles.infoValue}>
+                  {merchantAddress.slice(0, 8)}...{merchantAddress.slice(-6)}
+                </span>
+              </div>
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Balance</span>
+                <span className={styles.infoValue}>
+                  {isLoadingBalance ? "..." : `$${formatBalance()}`}
+                </span>
+              </div>
             </div>
 
             <div className={styles.inputGroup}>
-              <label htmlFor="amount">Payment Amount (USDC)</label>
-              <input
-                id="amount"
-                type="number"
-                step="0.01"
-                min="0"
-                value={paymentAmount}
-                onChange={(e) => setPaymentAmount(e.target.value)}
-                placeholder="0.00"
-                className={styles.amountInput}
-              />
+              <label htmlFor="amount">Payment Amount</label>
+              <div className={styles.amountInputWrapper}>
+                <span className={styles.currency}>$</span>
+                <input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={paymentAmount}
+                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  placeholder="0.00"
+                  className={styles.amountInput}
+                />
+                <span className={styles.currencyLabel}>USDC</span>
+              </div>
             </div>
 
-            <div className={styles.buttonGroup}>
-              <button
-                className={styles.continueButton}
-                onClick={handleAmountSubmit}
-                disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
-              >
-                Continue
-              </button>
-              <button className={styles.secondaryButton} onClick={resetToScan}>
-                Scan Different QR
-              </button>
-            </div>
+            <button
+              className={styles.continueButton}
+              onClick={handleAmountSubmit}
+              disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
+            >
+              Continue
+            </button>
           </div>
         )}
 
