@@ -59,6 +59,13 @@ export const MYSTERY_BOX_ADDRESS = (process.env.NEXT_PUBLIC_MYSTERY_BOX_ADDRESS 
 export const MYSTERY_BOX_ABI = [
   {
     inputs: [],
+    name: "grantMysteryBox",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "claimMysteryBox",
     outputs: [],
     stateMutability: "nonpayable",
