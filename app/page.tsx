@@ -5,7 +5,7 @@ import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useRouter } from "next/navigation";
 import { useAccount, useReadContract } from "wagmi";
 import { getCustomerPayments, formatTransactionDate, type Transaction } from "./lib/transactions";
-import { ERC20_ABI, USDC_ADDRESS } from "./lib/contracts";
+import { ERC20_ABI, USDC_ADDRESS, MYSTERY_BOX_ABI, MYSTERY_BOX_ADDRESS } from "./lib/contracts";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -34,6 +34,19 @@ export default function Home() {
       enabled: !!address,
     },
   });
+
+  // Get user's mystery box stats
+  const { data: userStats } = useReadContract({
+    address: MYSTERY_BOX_ADDRESS,
+    abi: MYSTERY_BOX_ABI,
+    functionName: "getUserStats",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !!address,
+    },
+  });
+
+  const unclaimedBoxes = userStats ? Number(userStats[0]) : 0;
 
   // Fetch recent transactions
   useEffect(() => {
@@ -80,6 +93,24 @@ export default function Home() {
       </div>
 
       <div className={styles.content}>
+        {/* Mystery Box Notification Banner */}
+        {unclaimedBoxes > 0 && (
+          <div className={styles.mysteryBoxBanner} onClick={() => router.push("/mysterybox")}>
+            <div className={styles.bannerLeft}>
+              <div className={styles.bannerIcon}>🎁</div>
+              <div className={styles.bannerText}>
+                <div className={styles.bannerTitle}>
+                  {unclaimedBoxes} Mystery {unclaimedBoxes === 1 ? "Box" : "Boxes"} Available!
+                </div>
+                <div className={styles.bannerSubtitle}>
+                  Tap to open and win USDC prizes
+                </div>
+              </div>
+            </div>
+            <div className={styles.bannerArrow}>→</div>
+          </div>
+        )}
+
         {/* Balance Card */}
         <div className={styles.balanceCard}>
           <div className={styles.balanceHeader}>

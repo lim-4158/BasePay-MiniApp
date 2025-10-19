@@ -59,6 +59,70 @@
   padding: 24px 20px;
 }
 
+/* Mystery Box Banner */
+.mysteryBoxBanner {
+  background: linear-gradient(135deg, #8B5CF6 0%, #FBBF24 100%);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  animation: pulseGlow 2s infinite;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
+}
+
+.mysteryBoxBanner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.6);
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4); }
+  50% { box-shadow: 0 8px 40px rgba(251, 191, 36, 0.6); }
+}
+
+.bannerLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bannerIcon {
+  font-size: 40px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.bannerText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bannerTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+}
+
+.bannerSubtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bannerArrow {
+  font-size: 24px;
+  color: white;
+  font-weight: 700;
+}
+
 /* Balance Card */
 .balanceCard {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);

@@ -1,4 +1,5 @@
-import { ethers } from "hardhat";
+import hre from "hardhat";
+const { ethers } = hre;
 
 async function main() {
   console.log("🎁 Deploying MysteryBoxRewards contract...\n");
@@ -20,8 +21,6 @@ async function main() {
   const mysteryBoxAddress = await mysteryBox.getAddress();
   console.log("\n✅ MysteryBoxRewards deployed to:", mysteryBoxAddress);
 
-  // Get initial state
-  const prizes = await mysteryBox.prizes(0);
   console.log("\nPrize Tiers:");
   console.log("- $0.01 USDC (40% chance)");
   console.log("- $0.02 USDC (30% chance)");

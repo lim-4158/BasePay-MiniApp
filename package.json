@@ -10,6 +10,7 @@
     "test:contracts": "hardhat test",
     "compile:contracts": "hardhat compile",
     "deploy:baseSepolia": "hardhat run contracts/scripts/deploy.ts --network baseSepolia",
+    "deploy:mysteryBox": "hardhat run contracts/scripts/deployMysteryBox.ts --network base",
     "test:deployed": "hardhat run contracts/scripts/test-deployed.ts --network baseSepolia"
   },
   "dependencies": {

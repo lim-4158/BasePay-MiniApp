@@ -13,7 +13,6 @@ export default function MysteryBox() {
   const { address } = useAccount();
 
   const [isOpening, setIsOpening] = useState(false);
-  const [prizeAmount, setPrizeAmount] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
 
   // Initialize minikit

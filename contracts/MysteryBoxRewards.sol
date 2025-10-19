@@ -48,10 +48,19 @@ contract MysteryBoxRewards is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @notice Grant a mystery box to a user (called after they share)
-     * @param user Address of the user who shared
+     * @notice Grant a mystery box to yourself (called after sharing)
+     * @dev Anyone can call this to grant themselves a box
      */
-    function grantMysteryBox(address user) external onlyOwner {
+    function grantMysteryBox() external {
+        unclaimedBoxes[msg.sender]++;
+        emit BoxGranted(msg.sender, block.timestamp);
+    }
+
+    /**
+     * @notice Owner can grant boxes to specific users
+     * @param user Address of the user
+     */
+    function grantMysteryBoxToUser(address user) external onlyOwner {
         require(user != address(0), "Invalid user address");
         unclaimedBoxes[user]++;
         emit BoxGranted(user, block.timestamp);
