@@ -120,37 +120,6 @@ export default function MerchantManage() {
         {/* QR Code Management */}
         {qrCodes.length > 0 && (
           <>
-            {/* QR Selector */}
-            <div className={styles.selectorSection}>
-              <div className={styles.selectorGroup}>
-                <label htmlFor="qrSelect" className={styles.selectorLabel}>
-                  QR Code
-                </label>
-                <div className={styles.dropdownWrapper}>
-                  <select
-                    id="qrSelect"
-                    className={styles.qrDropdown}
-                    value={selectedQR}
-                    onChange={(e) => setSelectedQR(e.target.value)}
-                  >
-                    {qrCodes.map((qr) => (
-                      <option key={qr.payload} value={qr.payload}>
-                        {qr.name}
-                      </option>
-                    ))}
-                  </select>
-                  <span className={styles.dropdownIcon}>▾</span>
-                </div>
-              </div>
-              <button
-                className={styles.addQRButton}
-                onClick={() => router.push("/merchant")}
-                aria-label="Add new QR code"
-              >
-                +
-              </button>
-            </div>
-
             {/* Today's Stats */}
             <div className={styles.statsCard}>
               <div className={styles.statItem}>
