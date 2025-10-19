@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useAccount } from "wagmi";
@@ -11,6 +11,7 @@ import {
   type Transaction,
 } from "../../lib/transactions";
 import styles from "./history.module.css";
+import { useEnsNames } from "../../hooks/useEnsNames";
 
 export default function CustomerHistory() {
   const router = useRouter();
@@ -52,6 +53,19 @@ export default function CustomerHistory() {
 
     fetchPayments();
   }, [address]);
+
+  const ensAddresses = useMemo(
+    () => transactions.map((tx) => tx.to),
+    [transactions]
+  );
+  const ensNames = useEnsNames(ensAddresses);
+
+  const formatAddress = (address: string) => {
+    const lookup = address.toLowerCase();
+    const ensName = ensNames[lookup];
+    const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    return ensName ? `${ensName} (${short})` : short;
+  };
 
   const totalSent = transactions.length > 0 ? calculateTotalSent(transactions) : "0";
   const uniqueMerchants = new Set(transactions.map((tx) => tx.to.toLowerCase())).size;
@@ -154,7 +168,7 @@ export default function CustomerHistory() {
                     <div className={styles.txRow}>
                       <span className={styles.txLabel}>To Merchant</span>
                       <span className={styles.txValue}>
-                        {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
+                        {formatAddress(tx.to)}
                       </span>
                     </div>
 

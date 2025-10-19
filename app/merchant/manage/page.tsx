@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useAccount } from "wagmi";
@@ -14,6 +14,7 @@ import {
   type Transaction,
 } from "../../lib/transactions";
 import styles from "./manage.module.css";
+import { useEnsNames } from "../../hooks/useEnsNames";
 
 export default function MerchantManage() {
   const router = useRouter();
@@ -45,6 +46,19 @@ export default function MerchantManage() {
       setSelectedQR(codes[0].payload);
     }
   }, [address, selectedQR]);
+
+  const ensAddresses = useMemo(
+    () => transactions.map((tx) => tx.from),
+    [transactions]
+  );
+  const ensNames = useEnsNames(ensAddresses);
+
+  const formatAddress = (address: string) => {
+    const key = address.toLowerCase();
+    const ensName = ensNames[key];
+    const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    return ensName ? `${ensName} (${short})` : short;
+  };
 
   // Fetch transactions when QR code selected
   useEffect(() => {
@@ -166,7 +180,7 @@ export default function MerchantManage() {
                         <div className={styles.txIcon}>💰</div>
                         <div className={styles.txInfo}>
                           <div className={styles.txFrom}>
-                            From: {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
+                            From: {formatAddress(tx.from)}
                           </div>
                           <div className={styles.txDate}>
                             {tx.timestamp

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useAccount } from "wagmi";
@@ -12,6 +12,7 @@ import {
   type Transaction,
 } from "../../lib/transactions";
 import styles from "./dashboard.module.css";
+import { useEnsNames } from "../../hooks/useEnsNames";
 
 export default function MerchantDashboard() {
   const router = useRouter();
@@ -53,6 +54,19 @@ export default function MerchantDashboard() {
 
     fetchPayments();
   }, [address]);
+
+  const ensAddresses = useMemo(
+    () => transactions.map((tx) => tx.from),
+    [transactions]
+  );
+  const ensNames = useEnsNames(ensAddresses);
+
+  const formatAddress = (address: string) => {
+    const key = address.toLowerCase();
+    const ensName = ensNames[key];
+    const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    return ensName ? `${ensName} (${short})` : short;
+  };
 
   const totalReceived = transactions.length > 0 ? calculateTotalReceived(transactions) : "0";
   const uniqueCustomers = getUniqueCustomerCount(transactions);
@@ -152,7 +166,7 @@ export default function MerchantDashboard() {
                     <div className={styles.txRow}>
                       <span className={styles.txLabel}>From</span>
                       <span className={styles.txValue}>
-                        {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
+                        {formatAddress(tx.from)}
                       </span>
                     </div>
 

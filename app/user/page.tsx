@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
@@ -8,6 +8,7 @@ import QRScanner from "../components/QRScanner";
 import { parsePayNowQR, type PayNowQRData } from "../lib/paynow";
 import { MERCHANT_REGISTRY_ABI, MERCHANT_REGISTRY_ADDRESS, ERC20_ABI, USDC_ADDRESS } from "../lib/contracts";
 import styles from "./user.module.css";
+import { useEnsNames } from "../hooks/useEnsNames";
 
 type Step = "scan" | "verify" | "amount" | "review" | "paying";
 
@@ -62,6 +63,14 @@ export default function UserPayment() {
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
     hash,
   });
+
+  const ensNames = useEnsNames(merchantAddress ? [merchantAddress] : []);
+  const formattedMerchantAddress = useMemo(() => {
+    if (!merchantAddress) return "";
+    const ensName = ensNames[merchantAddress.toLowerCase()];
+    const short = `${merchantAddress.slice(0, 6)}...${merchantAddress.slice(-4)}`;
+    return ensName ? `${ensName} (${short})` : short;
+  }, [merchantAddress, ensNames]);
 
   // Update merchant address when lookup completes
   useEffect(() => {
@@ -194,9 +203,7 @@ export default function UserPayment() {
             <div className={styles.compactInfo}>
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Paying to</span>
-                <span className={styles.infoValue}>
-                  {merchantAddress.slice(0, 8)}...{merchantAddress.slice(-6)}
-                </span>
+                <span className={styles.infoValue}>{formattedMerchantAddress}</span>
               </div>
               <div className={styles.infoItem}>
                 <span className={styles.infoLabel}>Balance</span>
@@ -247,7 +254,7 @@ export default function UserPayment() {
               <div className={styles.reviewRow}>
                 <span className={styles.reviewLabel}>To</span>
                 <span className={styles.reviewValue}>
-                  {merchantAddress.slice(0, 8)}...{merchantAddress.slice(-6)}
+                  {formattedMerchantAddress}
                 </span>
               </div>
               {qrDetails?.proxyValue && (
