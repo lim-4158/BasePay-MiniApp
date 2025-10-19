@@ -7,6 +7,9 @@ import { createPublicClient, http, parseAbiItem, formatUnits } from 'viem';
 import { base } from 'viem/chains';
 import { USDC_ADDRESS } from './contracts';
 
+// Base averages ~2 second block times → ~5,000 blocks ≈ 2.8 hours
+const DEFAULT_LOOKBACK_BLOCKS = BigInt(5_000);
+
 // Create public client for reading blockchain data
 // Using Base's public RPC - for production, use a dedicated RPC endpoint
 const publicClient = createPublicClient({
@@ -35,13 +38,13 @@ export async function getMerchantPayments(
   fromBlock?: bigint
 ): Promise<Transaction[]> {
   try {
-    // If no fromBlock specified, query from approximately 30 days ago
-    // Base has ~2 second block time, so 30 days ≈ 1,296,000 blocks
+    // If no fromBlock specified, query the most recent ~5k blocks (~3 hours)
     let startBlock = fromBlock;
     if (!startBlock) {
       const currentBlock = await publicClient.getBlockNumber();
-      // Query last 1.3M blocks (roughly 30 days on Base)
-      startBlock = currentBlock > BigInt(1300000) ? currentBlock - BigInt(1300000) : BigInt(0);
+      startBlock = currentBlock > DEFAULT_LOOKBACK_BLOCKS
+        ? currentBlock - DEFAULT_LOOKBACK_BLOCKS
+        : BigInt(0);
     }
 
     const logs = await publicClient.getLogs({
@@ -97,12 +100,13 @@ export async function getCustomerPayments(
   fromBlock?: bigint
 ): Promise<Transaction[]> {
   try {
-    // If no fromBlock specified, query from approximately 30 days ago
+    // If no fromBlock specified, query the most recent ~5k blocks (~3 hours)
     let startBlock = fromBlock;
     if (!startBlock) {
       const currentBlock = await publicClient.getBlockNumber();
-      // Query last 1.3M blocks (roughly 30 days on Base)
-      startBlock = currentBlock > BigInt(1300000) ? currentBlock - BigInt(1300000) : BigInt(0);
+      startBlock = currentBlock > DEFAULT_LOOKBACK_BLOCKS
+        ? currentBlock - DEFAULT_LOOKBACK_BLOCKS
+        : BigInt(0);
     }
 
     const logs = await publicClient.getLogs({
