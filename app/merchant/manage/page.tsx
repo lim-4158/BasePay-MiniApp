@@ -96,7 +96,6 @@ export default function MerchantManage() {
           ← Back
         </button>
         <h1 className={styles.title}>Merchant Manager</h1>
-        <p className={styles.subtitle}>Manage your PayNow QR codes</p>
       </div>
 
       <div className={styles.content}>
@@ -123,26 +122,32 @@ export default function MerchantManage() {
           <>
             {/* QR Selector */}
             <div className={styles.selectorSection}>
-              <label htmlFor="qrSelect" className={styles.selectorLabel}>
-                Select QR Code
-              </label>
-              <select
-                id="qrSelect"
-                className={styles.qrDropdown}
-                value={selectedQR}
-                onChange={(e) => setSelectedQR(e.target.value)}
-              >
-                {qrCodes.map((qr) => (
-                  <option key={qr.payload} value={qr.payload}>
-                    {qr.name}
-                  </option>
-                ))}
-              </select>
+              <div className={styles.selectorGroup}>
+                <label htmlFor="qrSelect" className={styles.selectorLabel}>
+                  QR Code
+                </label>
+                <div className={styles.dropdownWrapper}>
+                  <select
+                    id="qrSelect"
+                    className={styles.qrDropdown}
+                    value={selectedQR}
+                    onChange={(e) => setSelectedQR(e.target.value)}
+                  >
+                    {qrCodes.map((qr) => (
+                      <option key={qr.payload} value={qr.payload}>
+                        {qr.name}
+                      </option>
+                    ))}
+                  </select>
+                  <span className={styles.dropdownIcon}>▾</span>
+                </div>
+              </div>
               <button
                 className={styles.addQRButton}
                 onClick={() => router.push("/merchant")}
+                aria-label="Add new QR code"
               >
-                + Add New QR
+                +
               </button>
             </div>
 

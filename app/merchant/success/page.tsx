@@ -65,8 +65,6 @@ function SuccessContent() {
 
         <h1 className={styles.title}>PayNow QR Registered!</h1>
 
-        <p className={styles.subtitle}>Your QR payload now resolves to your BasedPay merchant wallet</p>
-
         {/* Transaction Details */}
         {txHash && (
           <div className={styles.txCard}>

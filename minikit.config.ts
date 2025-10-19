@@ -26,11 +26,11 @@ export const minikitConfig = {
     webhookUrl: `${ROOT_URL}/api/webhook`,
     primaryCategory: "social",
     tags: ["marketing", "ads", "quickstart", "waitlist"],
-    heroImageUrl: `${ROOT_URL}/blue-hero.png`, 
+    heroImageUrl: `${ROOT_URL}/basedpay.png`, 
     tagline: "",
     ogTitle: "",
     ogDescription: "",
-    ogImageUrl: `${ROOT_URL}/blue-hero.png`,
+    ogImageUrl: `${ROOT_URL}/basedpay.png`,
     noindex: true
 
   },
