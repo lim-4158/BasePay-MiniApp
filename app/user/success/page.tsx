@@ -7,6 +7,8 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { MYSTERY_BOX_ABI, MYSTERY_BOX_ADDRESS } from "../../lib/contracts";
 import styles from "./success.module.css";
 
+const SHARE_URL = "https://new-mini-app-quickstart-indol-psi.vercel.app/";
+
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -52,11 +54,14 @@ function SuccessContent() {
         text += `I've earned $${totalEarned.toFixed(2)} from ${boxesOpened} mystery boxes! 🎁\n\n`;
       }
 
-      text += `Paying with crypto via QR codes on Base. Share & get FREE mystery boxes with real USDC prizes! 🚀\n\nJoin me at ${process.env.NEXT_PUBLIC_URL || "BasedPay"}`;
+      text += `Paying with crypto via QR codes on Base. Share & get FREE mystery boxes with real USDC prizes! 🚀\nWin up to 500 USDC when you collect mystery boxes!\n\nJoin me at ${process.env.NEXT_PUBLIC_URL || "BasedPay"}\n${SHARE_URL}`;
+
+      const primaryUrl = process.env.NEXT_PUBLIC_URL || SHARE_URL;
+      const embedUrls = Array.from(new Set([primaryUrl, SHARE_URL]));
 
       const result = await composeCastAsync({
         text: text,
-        embeds: [process.env.NEXT_PUBLIC_URL || ""],
+        embeds: embedUrls,
       });
 
       if (result?.cast) {

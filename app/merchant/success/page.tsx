@@ -5,23 +5,29 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useComposeCast } from "@coinbase/onchainkit/minikit";
 import styles from "./success.module.css";
 
+const SHARE_URL = "https://new-mini-app-quickstart-indol-psi.vercel.app/";
+
 function SuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { composeCastAsync } = useComposeCast();
 
   const txHash = searchParams.get("tx") || "";
+  const qrName = searchParams.get("name") || "Our venue";
 
   const [isSharing, setIsSharing] = useState(false);
 
   const handleShare = async () => {
     try {
       setIsSharing(true);
-      const text = `I just registered my PayNow QR on BasedPay! 🎉\n\nCrypto payments to this QR now settle directly to my Base wallet.`;
+      const text = `${qrName} is now on BasedPay! 🎉 Come dine with us and pay in USDC to collect mystery boxes and win up to 500 USDC.\n${SHARE_URL}`;
+
+      const primaryUrl = process.env.NEXT_PUBLIC_URL || SHARE_URL;
+      const embedUrls = Array.from(new Set([primaryUrl, SHARE_URL]));
 
       const result = await composeCastAsync({
         text,
-        embeds: [process.env.NEXT_PUBLIC_URL || ""],
+        embeds: embedUrls,
       });
 
       if (result?.cast) {
