@@ -15,7 +15,13 @@ export default function Success() {
       const text = `BasedPay is live! 🚀 Scan PayNow QR codes, pay with USDC, and collect mystery boxes worth up to 500 USDC. Check it out:\n${SHARE_URL}`;
 
       const primaryUrl = process.env.NEXT_PUBLIC_URL || SHARE_URL;
-      const embedUrls = Array.from(new Set([primaryUrl, SHARE_URL]));
+      const candidates = Array.from(new Set([primaryUrl, SHARE_URL])).filter(Boolean) as string[];
+      const embedUrls: [] | [string] | [string, string] =
+        candidates.length === 0
+          ? []
+          : candidates.length === 1
+          ? [candidates[0]]
+          : [candidates[0], candidates[1]];
       
       const result = await composeCastAsync({
         text: text,

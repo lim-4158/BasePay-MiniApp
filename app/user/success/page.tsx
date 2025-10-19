@@ -57,7 +57,13 @@ function SuccessContent() {
       text += `Paying with crypto via QR codes on Base. Share & get FREE mystery boxes with real USDC prizes! 🚀\nWin up to 500 USDC when you collect mystery boxes!\n\nJoin me at ${process.env.NEXT_PUBLIC_URL || "BasedPay"}\n${SHARE_URL}`;
 
       const primaryUrl = process.env.NEXT_PUBLIC_URL || SHARE_URL;
-      const embedUrls = Array.from(new Set([primaryUrl, SHARE_URL]));
+      const candidates = Array.from(new Set([primaryUrl, SHARE_URL])).filter(Boolean) as string[];
+      const embedUrls: [] | [string] | [string, string] =
+        candidates.length === 0
+          ? []
+          : candidates.length === 1
+          ? [candidates[0]]
+          : [candidates[0], candidates[1]];
 
       const result = await composeCastAsync({
         text: text,
