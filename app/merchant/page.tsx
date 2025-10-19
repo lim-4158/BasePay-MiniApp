@@ -30,8 +30,6 @@ export default function MerchantRegistration() {
   const [qrDetails, setQrDetails] = useState<PayNowQRData | null>(null);
   const [qrName, setQrName] = useState("");
   const [error, setError] = useState("");
-  const [manualEntry, setManualEntry] = useState(false);
-  const [manualPayload, setManualPayload] = useState("");
 
   // Initialize minikit
   useEffect(() => {
@@ -65,7 +63,6 @@ export default function MerchantRegistration() {
     setStep("scan");
     setQrPayload("");
     setQrDetails(null);
-    setManualPayload("");
     setError("");
   };
 
@@ -77,23 +74,6 @@ export default function MerchantRegistration() {
     setQrDetails(parsed);
     setStep("naming");
     setError("");
-    setManualEntry(false);
-  };
-
-  // Handle manual payload entry
-  const handleManualSubmit = () => {
-    const parsed = parsePayNowQR(manualPayload);
-
-    if (!parsed.raw) {
-      setError("Please paste the full QR payload.");
-      return;
-    }
-
-    setQrPayload(parsed.raw);
-    setQrDetails(parsed);
-    setStep("naming");
-    setError("");
-    setManualEntry(false);
   };
 
   // Handle registration submission
@@ -150,40 +130,9 @@ export default function MerchantRegistration() {
 
       <div className={styles.content}>
         {/* Step 1: Scan QR Code */}
-        {step === "scan" && !manualEntry && (
+        {step === "scan" && (
           <div className={styles.scanStep}>
             <QRScanner onScan={handleQRScan} onError={setError} />
-
-            <button className={styles.manualButton} onClick={() => setManualEntry(true)}>
-              Enter QR Payload Manually
-            </button>
-          </div>
-        )}
-
-        {/* Manual Entry */}
-        {step === "scan" && manualEntry && (
-          <div className={styles.manualEntry}>
-            <div className={styles.inputGroup}>
-              <label htmlFor="qrPayload">PayNow QR Payload</label>
-              <textarea
-                id="qrPayload"
-                value={manualPayload}
-                onChange={(e) => setManualPayload(e.target.value)}
-                placeholder="Paste the full string encoded in your PayNow QR"
-                className={styles.textArea}
-                rows={6}
-              />
-              <p className={styles.hint}>You can find this by exporting the QR from your banking portal.</p>
-            </div>
-
-            <div className={styles.buttonGroup}>
-              <button className={styles.submitButton} onClick={handleManualSubmit} disabled={!manualPayload.trim()}>
-                Continue
-              </button>
-              <button className={styles.secondaryButton} onClick={() => setManualEntry(false)}>
-                Scan QR Instead
-              </button>
-            </div>
           </div>
         )}
 

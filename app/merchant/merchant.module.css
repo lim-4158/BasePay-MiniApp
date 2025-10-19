@@ -48,33 +48,9 @@
 
 .scanStep,
 .confirmStep,
-.claimingStep,
-.manualEntry {
+.claimingStep {
   max-width: 500px;
   margin: 0 auto;
-}
-
-.manualButton,
-.secondaryButton {
-  background: transparent;
-  border: 2px solid #0052FF;
-  color: #0052FF;
-  padding: 14px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 16px;
-}
-
-.manualButton:hover,
-.secondaryButton:hover {
-  background: rgba(0, 82, 255, 0.05);
-}
-
-.manualEntry {
-  padding: 20px 0;
 }
 
 .inputGroup {
@@ -111,12 +87,6 @@
   margin-top: 6px;
   font-size: 14px;
   color: #6B7280;
-}
-
-.buttonGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 .submitButton,
