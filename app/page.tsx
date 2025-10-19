@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import { useRouter } from "next/navigation";
 import { useAccount, useReadContract } from "wagmi";
 import { getCustomerPayments, formatTransactionDate, type Transaction } from "./lib/transactions";
 import { ERC20_ABI, USDC_ADDRESS, MYSTERY_BOX_ABI, MYSTERY_BOX_ADDRESS } from "./lib/contracts";
 import styles from "./page.module.css";
-import { useEnsNames } from "./hooks/useEnsNames";
 
 export default function Home() {
   const { isFrameReady, setFrameReady, context } = useMiniKit();
@@ -67,19 +66,6 @@ export default function Home() {
 
     fetchTransactions();
   }, [address]);
-
-  const ensAddresses = useMemo(
-    () => transactions.map((tx) => tx.to),
-    [transactions]
-  );
-  const ensNames = useEnsNames(ensAddresses);
-
-  const formatAddress = (address: string) => {
-    const lookupKey = address.toLowerCase();
-    const ensName = ensNames[lookupKey];
-    const short = `${address.slice(0, 6)}...${address.slice(-4)}`;
-    return ensName ? `${ensName} (${short})` : short;
-  };
 
   const formatBalance = () => {
     if (!usdcBalance) return "0.00";
@@ -211,7 +197,7 @@ export default function Home() {
                     <div className={styles.txIcon}>💸</div>
                     <div className={styles.txInfo}>
                       <div className={styles.txMerchant}>
-                        {formatAddress(tx.to)}
+                        {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
                       </div>
                       <div className={styles.txDate}>
                         {tx.timestamp
