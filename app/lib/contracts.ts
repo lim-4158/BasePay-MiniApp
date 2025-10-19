@@ -50,7 +50,80 @@ export const MERCHANT_REGISTRY_ADDRESS = (process.env.NEXT_PUBLIC_MERCHANT_REGIS
   "0x4b45034E7Fc0195341301f0Ba60704884Ac4A53d") as `0x${string}`;
 
 export const USDC_ADDRESS = (process.env.NEXT_PUBLIC_USDC_ADDRESS ||
-  "0x036CbD53842c5426634e7929541eC2318f3dCF7e") as `0x${string}`;
+  "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913") as `0x${string}`;
+
+export const MYSTERY_BOX_ADDRESS = (process.env.NEXT_PUBLIC_MYSTERY_BOX_ADDRESS ||
+  "0x0000000000000000000000000000000000000000") as `0x${string}`;
+
+// MysteryBoxRewards Contract ABI
+export const MYSTERY_BOX_ABI = [
+  {
+    inputs: [],
+    name: "claimMysteryBox",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "user", type: "address" }],
+    name: "getUserStats",
+    outputs: [
+      { internalType: "uint256", name: "unclaimed", type: "uint256" },
+      { internalType: "uint256", name: "opened", type: "uint256" },
+      { internalType: "uint256", name: "earned", type: "uint256" },
+      { internalType: "uint256", name: "biggest", type: "uint256" },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "unclaimedBoxes",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "boxesOpened",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "totalClaimed",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "address", name: "", type: "address" }],
+    name: "biggestWin",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "user", type: "address" },
+      { indexed: false, internalType: "uint256", name: "prize", type: "uint256" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
+    ],
+    name: "BoxOpened",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "address", name: "user", type: "address" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
+    ],
+    name: "BoxGranted",
+    type: "event",
+  },
+] as const;
 
 // ERC20 ABI (for USDC transfers)
 export const ERC20_ABI = [
