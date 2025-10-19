@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import type { MerchantRegistry } from "../../typechain-types/contracts/MerchantRegistry";
+import { MerchantRegistry__factory } from "../../typechain-types/factories/contracts/MerchantRegistry__factory";
 
 const { ethers } = hre;
 
@@ -13,10 +13,10 @@ async function main() {
   console.log("📝 Testing with account:", signer.address);
 
   // Get contract instance
-  const registry = (await ethers.getContractAt(
-    "MerchantRegistry",
-    MERCHANT_REGISTRY_ADDRESS
-  )) as MerchantRegistry;
+  const registry = MerchantRegistry__factory.connect(
+    MERCHANT_REGISTRY_ADDRESS,
+    signer
+  );
 
   console.log("📍 Contract address:", MERCHANT_REGISTRY_ADDRESS);
   console.log();
